@@ -6,11 +6,13 @@ import json
 GAME = ConfigVariableString('game', 'fft').getValue()
 
 def load(name):
-    f = open(GAME+'/maps/'+name+'.json', 'r')
-    m = json.loads(f.read())
-    f.close()
+    with open(f'{GAME}/maps/{name}.json', 'r') as f:
+        m = json.loads(f.read())
+    tiles = [
+        [[None for _ in range(m['z'])] for _ in range(m['y'])]
+        for _ in range(m['x'])
+    ]
 
-    tiles = [ [ [ None for z in range(m['z']) ] for y in range(m['y']) ] for x in range(m['x']) ]
     for t in m['tiles']:
         tiles[int(t['x'])][int(t['y'])][int(t['z'])] = t
 

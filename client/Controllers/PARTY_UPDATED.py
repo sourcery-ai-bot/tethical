@@ -16,23 +16,26 @@ def execute(client, iterator):
     for x,xs in enumerate(client.party['map']['tiles']):
         for y,ys in enumerate(xs):
             for z,zs in enumerate(ys):
-                if not client.party['map']['tiles'][x][y][z] is None:
-                    if client.party['map']['tiles'][x][y][z].has_key('char') and client.party['map']['tiles'][x][y][z]['char'] != 0:
-                        charid = client.party['map']['tiles'][x][y][z]['char']
-                        char = client.party['chars'][charid]
+                if (
+                    client.party['map']['tiles'][x][y][z] is not None
+                    and client.party['map']['tiles'][x][y][z].has_key('char')
+                    and client.party['map']['tiles'][x][y][z]['char'] != 0
+                ):
+                    charid = client.party['map']['tiles'][x][y][z]['char']
+                    char = client.party['chars'][charid]
 
-                        if char['active']:
-                            client.camhandler.move(client.battleGraphics.logic2terrain((x, y, z)))
-                            client.at.showOnSprite(client.matrix.sprites[charid])
+                    if char['active']:
+                        client.camhandler.move(client.battleGraphics.logic2terrain((x, y, z)))
+                        client.at.showOnSprite(client.matrix.sprites[charid])
 
-                            client.updateCursorPos((x,y,z))
+                        client.updateCursorPos((x,y,z))
 
-                            client.charcard = GUI.CharCard(char)
+                        client.charcard = GUI.CharCard(char)
 
-                            if client.party['yourturn']:
-                                if char['canmove'] or char['canact']:
-                                    client.showMenu(charid)
-                                else:
-                                    client.onWaitClicked(charid)
+                        if client.party['yourturn']:
+                            if char['canmove'] or char['canact']:
+                                client.showMenu(charid)
                             else:
-                                client.camhandler.ignoreAll()
+                                client.onWaitClicked(charid)
+                        else:
+                            client.camhandler.ignoreAll()

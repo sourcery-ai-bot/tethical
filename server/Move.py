@@ -10,12 +10,22 @@ def getadjacentwalkables( party, charid, tiles ):
             try:
                 t2 = party['map']['tiles'][x2][y2]
                 if t2 and x2 >= 0 and y2 >= 0:
-                    for z2,t3 in enumerate(t2):
-                        if t3 \
-                        and (not t3.has_key('char') or party['chars'][t3['char']]['team'] ==  party['chars'][charid]['team'] or party['chars'][t3['char']]['hp'] == 0 ) \
-                        and t3['walkable'] and t3['selectable'] \
-                        and math.fabs(z2-z1) <= party['chars'][charid]['jump']:
-                            walkables.append( (x2, y2, z2) )
+                    walkables.extend(
+                        (x2, y2, z2)
+                        for z2, t3 in enumerate(t2)
+                        if t3
+                        and (
+                            not t3.has_key('char')
+                            or party['chars'][t3['char']]['team']
+                            == party['chars'][charid]['team']
+                            or party['chars'][t3['char']]['hp'] == 0
+                        )
+                        and t3['walkable']
+                        and t3['selectable']
+                        and math.fabs(z2 - z1)
+                        <= party['chars'][charid]['jump']
+                    )
+
             except:
                 pass
 
@@ -27,14 +37,11 @@ def GetWalkables( party, charid ):
     tile = Character.Coords( party, charid )
     # recursively add walkables tiles to the list
     walkables = [ tile ]
-    for i in range(1, party['chars'][charid]['move']+1):
+    for _ in range(1, party['chars'][charid]['move']+1):
         walkables.extend( getadjacentwalkables( party, charid, walkables ) )
 
     # remove current tile from the list
-    filtered_walkables = []
-    for walkable in walkables:
-        if not walkable == tile:
-            filtered_walkables.append( walkable )
+    filtered_walkables = [walkable for walkable in walkables if walkable != tile]
     walkables = filtered_walkables
 
     # remove tiles containing characters from the list
@@ -61,7 +68,7 @@ def GetNewDirection( x1, y1, x2, y2 ):
     else:
         return 2 if dx > 0 else 3
 
-def GetPath ( party, charid, x1, y1, z1, x2, y2, z2 ):
+def GetPath( party, charid, x1, y1, z1, x2, y2, z2 ):
 
     tree = { '-'.join(map(str,(x1,y1,z1))) : {} }
     buildtree( party, charid, tree, party['chars'][charid]['move']-1, '-'.join(map(str,(x2,y2,z2))) )
@@ -69,11 +76,7 @@ def GetPath ( party, charid, x1, y1, z1, x2, y2, z2 ):
     paths = []
     findpathes( tree, [], paths )
 
-    pathtoreturn = []
-    for tile in paths[0]:
-        pathtoreturn.append( tuple(map(int,tile.split('-'))) )
-
-    return pathtoreturn
+    return [tuple(map(int,tile.split('-'))) for tile in paths[0]]
 
 def buildtree ( party, charid, tree, moves, dest ):
 

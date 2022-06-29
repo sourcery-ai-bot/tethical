@@ -8,7 +8,7 @@ GAME = 'lijj'
 class Chooser(DirectObject.DirectObject):
     
     def __init__(self, charid, sprite, camhandler, callback, cancelcallback):
-    
+
         self.charid = charid
         self.sprite = sprite
         self.camhandler = camhandler
@@ -18,22 +18,22 @@ class Chooser(DirectObject.DirectObject):
         self.hidir = None
 
         # Textures
-        self.tex = [ 0 for i in range(4) ]
+        self.tex = [0 for _ in range(4)]
         for i in range(4):
-            self.tex[i] = loader.loadTexture(GAME+'/textures/gui/direction'+str(i)+'.png')
+            self.tex[i] = loader.loadTexture(f'{GAME}/textures/gui/direction{str(i)}.png')
             self.tex[i].setMagfilter(Texture.FTNearest)
             self.tex[i].setMinfilter(Texture.FTNearest)
 
         # Sounds
-        self.hover_snd   = base.loader.loadSfx(GAME+"/sounds/hover.ogg")
-        self.clicked_snd = base.loader.loadSfx(GAME+"/sounds/clicked.ogg")
-        self.cancel_snd  = base.loader.loadSfx(GAME+"/sounds/cancel.ogg")
+        self.hover_snd = base.loader.loadSfx(f"{GAME}/sounds/hover.ogg")
+        self.clicked_snd = base.loader.loadSfx(f"{GAME}/sounds/clicked.ogg")
+        self.cancel_snd = base.loader.loadSfx(f"{GAME}/sounds/cancel.ogg")
 
         # Buttons container
         self.directionRoot = sprite.node.attachNewNode( "directionRoot" )
 
         cm = CardMaker('card')
-        cm.setFrame(-2, 2, -2, 2) 
+        cm.setFrame(-2, 2, -2, 2)
         self.card = render.attachNewNode(cm.generate())
         self.card.setTexture(self.tex[self.initdir-1])
         self.card.setTransparency(True)

@@ -7,7 +7,7 @@ class Cursor(object):
         self.battleGraphics = battleGraphics
         self.matrixContainer = matrixContainer
 
-        self.curtex = loader.loadTexture(GAME+'/textures/cursor.png')
+        self.curtex = loader.loadTexture(f'{GAME}/textures/cursor.png')
         self.curtex.setMagfilter(Texture.FTNearest)
         self.curtex.setMinfilter(Texture.FTNearest)
 
@@ -15,18 +15,18 @@ class Cursor(object):
         self.y = False
         self.z = False
 
-        self.cursor = loader.loadModel(GAME+'/models/slopes/flat')
+        self.cursor = loader.loadModel(f'{GAME}/models/slopes/flat')
         self.cursor.reparentTo( self.matrixContainer )
         self.cursor.setScale(3.7)
         self.cursor.setTransparency(TransparencyAttrib.MAlpha)
         self.cursor.setColor( 1, 1, 1, 1 )
         self.cursor.setTexture(self.curtex)
 
-        pointertex = loader.loadTexture(GAME+'/textures/pointer.png')
+        pointertex = loader.loadTexture(f'{GAME}/textures/pointer.png')
         pointertex.setMagfilter(Texture.FTNearest)
         pointertex.setMinfilter(Texture.FTNearest)
         cm = CardMaker('card')
-        cm.setFrame(-2, 2, -2, 2) 
+        cm.setFrame(-2, 2, -2, 2)
         self.pointer = render.attachNewNode(cm.generate())
         self.pointer.setTexture(pointertex)
         self.pointer.setTransparency(True)
@@ -36,7 +36,7 @@ class Cursor(object):
 
     def move(self, x, y, z, tile):
         self.cursor.detachNode()
-        self.cursor = loader.loadModel(GAME+"/models/slopes/"+tile['slope'])
+        self.cursor = loader.loadModel(f"{GAME}/models/slopes/" + tile['slope'])
         self.cursor.reparentTo( self.matrixContainer )
         self.cursor.setScale(3.7, 3.7, 6.0/7.0*3.7*tile['scale'])
         self.cursor.setTransparency(TransparencyAttrib.MAlpha)

@@ -8,10 +8,10 @@ def execute(client, iterator):
         client.charcard.hide()
     if client.actionpreview:
         client.actionpreview.hide()
-    for i,charid in enumerate(client.matrix.sprites):
+    for charid in client.matrix.sprites:
         if client.matrix.sprites[charid].animation == 'walk':
             client.updateSpriteAnimation(charid, 'stand')
     client.music.stop()
-    client.music = base.loader.loadSfx(GAME+'/music/13.ogg')
+    client.music = base.loader.loadSfx(f'{GAME}/music/13.ogg')
     client.music.play()
     GUI.BrownOverlay(GUI.Congratulations, client.end)

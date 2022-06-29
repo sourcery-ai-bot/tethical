@@ -17,11 +17,11 @@ def execute(server, iterator, source):
         server.players[login] = source
         server.sessions[source] = {}
         server.sessions[source]['login'] = login
-        print login, 'logged in.'
+        server.players[login] = source
         # since the server code is not connected to the database yet,
         # we generate a random team for each player
         server.sessions[source]['characters'] = []
-        for i in range(10):
+        for _ in range(10):
             server.charid = server.charid + 1
             char = Character.Random(server.charid)
             server.sessions[source]['characters'].append(char)

@@ -7,7 +7,7 @@ class AT(object):
         self.atcontainer = render.attachNewNode("atcontainer")
         self.atcontainer.setPos(0,0,3.5)
         self.atcontainer.setBillboardPointEye()
-        at = loader.loadModel(GAME+'/models/gui/AT')
+        at = loader.loadModel(f'{GAME}/models/gui/AT')
         at.setTransparency(True)
         at.reparentTo(self.atcontainer)
         at.setPos(.75,0,0)

@@ -6,20 +6,19 @@ import json, random, os
 GAME = ConfigVariableString('game', 'fft').getValue()
 
 jobs = {}
-jobids = map( lambda m: m.split('.')[0], os.listdir(GAME+'/jobs'))
+jobids = map(lambda m: m.split('.')[0], os.listdir(f'{GAME}/jobs'))
 for jobid in jobids:
-    f = open(GAME+'/jobs/'+jobid+'.json', 'r')
-    jobs[jobid] = json.loads(f.read())
-    f.close()
+    with open(f'{GAME}/jobs/{jobid}.json', 'r') as f:
+        jobs[jobid] = json.loads(f.read())
 
 def Coords( party, charid ):
-    
+
     for x in range( party['map']['x'] ):
         for y in range( party['map']['y'] ):
             for z in range( party['map']['z'] ):
-                
+
                 tile = party['map']['tiles'][x][y][z]
-                
+
                 if tile and tile.has_key('char') and int(tile['char']) == int(charid):
                     return (x, y, z)
 
@@ -27,7 +26,7 @@ def Random( charid, teamid=0, direction=0 ):
     jobid = jobids[random.randint(0, len(jobids)-1)]
     job = jobs[jobid]
     gender = ('F','M')[random.randint(0, 1)]
-    sprite = str(jobid)+'_'+str(gender)+'_'+str(teamid)
+    sprite = f'{str(jobid)}_{str(gender)}_{str(teamid)}'
 
     if gender == 'F':
         rhp = random.randint(458752, 491519)
@@ -82,11 +81,9 @@ def Random( charid, teamid=0, direction=0 ):
            }
 
 def GetRandomName( gender ):
-    f = open(GAME+'/'+gender+'_names.txt', 'r')
-    names = f.readlines()
-    f.close()
-    
+    with open(f'{GAME}/{gender}_names.txt', 'r') as f:
+        names = f.readlines()
     i = random.randint(0, len(names)-1)
-    
+
     return names[i]
 

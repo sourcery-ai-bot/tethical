@@ -21,7 +21,7 @@ import SequenceBuilder
 class Client(object):
 
     def __init__(self):
-        self.music = base.loader.loadSfx(GAME+'/music/24.ogg')
+        self.music = base.loader.loadSfx(f'{GAME}/music/24.ogg')
         self.music.setLoop(True)
         self.music.play()
         self.background = GUI.Background(self.loginScreen)
@@ -78,33 +78,36 @@ class Client(object):
 
         # Instanciate the battle graphics
         self.battleGraphics = BattleGraphics(self.party['map'])
-        
+
         # Light the scene
         self.battleGraphics.lightScene()
-        
+
         # Display the terrain
         self.battleGraphics.displayTerrain()
-        
+
         # Play the background music
-        self.music = base.loader.loadSfx(GAME+'/music/'+self.party['map']['music']+'.ogg')
+        self.music = base.loader.loadSfx(
+            f'{GAME}/music/' + self.party['map']['music'] + '.ogg'
+        )
+
         self.music.setLoop(True)
         self.music.play()
-        
+
         # Load sounds
-        self.hover_snd   = base.loader.loadSfx(GAME+"/sounds/hover.ogg")
-        self.clicked_snd = base.loader.loadSfx(GAME+"/sounds/clicked.ogg")
-        self.cancel_snd  = base.loader.loadSfx(GAME+"/sounds/cancel.ogg")
-        self.attack_snd  = base.loader.loadSfx(GAME+"/sounds/attack.ogg")
-        self.die_snd     = base.loader.loadSfx(GAME+"/sounds/die.ogg")
-        
+        self.hover_snd = base.loader.loadSfx(f"{GAME}/sounds/hover.ogg")
+        self.clicked_snd = base.loader.loadSfx(f"{GAME}/sounds/clicked.ogg")
+        self.cancel_snd = base.loader.loadSfx(f"{GAME}/sounds/cancel.ogg")
+        self.attack_snd = base.loader.loadSfx(f"{GAME}/sounds/attack.ogg")
+        self.die_snd = base.loader.loadSfx(f"{GAME}/sounds/die.ogg")
+
         # Place highlightable tiles on the map
         self.matrix = Matrix(self.battleGraphics, self.party['map'])
         self.matrix.placeChars(self.party['chars'])
-        
+
         # Instanciate and hide the AT flag
         self.at = AT()
         self.at.hide()
-        
+
         self.charbars = None
         self.charcard = None
         self.actionpreview = None

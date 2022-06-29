@@ -2,7 +2,7 @@
 def execute(server, iterator, source):
     party = server.parties[server.sessions[source]['party']]
     chars = party['chars']
-    
+
     aliveteams = {}
     for charid in chars.keys():
         if chars[charid]['hp'] > 0:
@@ -25,7 +25,7 @@ def execute(server, iterator, source):
         if chars[charid]['active']:
             server.send.PARTY_UPDATED(party['yourturn'], chars, source)
             return
-    
+
     while True:
         for charid in chars.keys():
             char = chars[charid]

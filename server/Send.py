@@ -40,7 +40,7 @@ class Send(object):
     def PARTY_JOIN_FAIL(self, name, parties, player):
         myPyDatagram = PyDatagram()
         myPyDatagram.addString('PARTY_JOIN_FAIL')
-        myPyDatagram.addString('Party '+name+' is full.')
+        myPyDatagram.addString(f'Party {name} is full.')
         myPyDatagram.addString32(json.dumps(parties))
         self.cWriter.send(myPyDatagram, player)
 

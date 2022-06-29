@@ -1,7 +1,7 @@
 from Config import *
 import direct.directbase.DirectStart
 from direct.showbase import DirectObject
-from direct.gui.OnscreenText import OnscreenText 
+from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import *
 from direct.task import Task
 from direct.actor import Actor
@@ -14,17 +14,17 @@ from BarNodeDrawer import Bar
 
 u = 1.0/128.0
 v = 1.0/120.0
-hover_snd = base.loader.loadSfx(GAME+"/sounds/hover.ogg")
-clicked_snd = base.loader.loadSfx(GAME+"/sounds/clicked.ogg")
-cancel_snd = base.loader.loadSfx(GAME+"/sounds/cancel.ogg")
+hover_snd = base.loader.loadSfx(f"{GAME}/sounds/hover.ogg")
+clicked_snd = base.loader.loadSfx(f"{GAME}/sounds/clicked.ogg")
+cancel_snd = base.loader.loadSfx(f"{GAME}/sounds/cancel.ogg")
 regularscale = 2*16.0/240.0
 scale = 2*12.0/240.0
-regularfont = loader.loadFont(GAME+'/fonts/fft')
-font3 = loader.loadFont(GAME+'/fonts/fft3')
-font4 = loader.loadFont(GAME+'/fonts/fft4')
-coordsfont = loader.loadFont(GAME+'/fonts/fftcoords')
-whitefont = loader.loadFont(GAME+'/fonts/fftwhite')
-smwhitefont = loader.loadFont(GAME+'/fonts/fftwhite-small-caps')
+regularfont = loader.loadFont(f'{GAME}/fonts/fft')
+font3 = loader.loadFont(f'{GAME}/fonts/fft3')
+font4 = loader.loadFont(f'{GAME}/fonts/fft4')
+coordsfont = loader.loadFont(f'{GAME}/fonts/fftcoords')
+whitefont = loader.loadFont(f'{GAME}/fonts/fftwhite')
+smwhitefont = loader.loadFont(f'{GAME}/fonts/fftwhite-small-caps')
 
 class Coords(DirectObject.DirectObject):
 
@@ -50,7 +50,7 @@ class Background(DirectObject.DirectObject):
 
     def __init__(self, command):
         
-        tex = loader.loadTexture(GAME+'/textures/gui/loadingbackground.png')
+        tex = loader.loadTexture(f'{GAME}/textures/gui/loadingbackground.png')
         tex.setMagfilter(Texture.FTNearest)
         tex.setMinfilter(Texture.FTNearest)
 
@@ -70,7 +70,7 @@ class Blueprint(DirectObject.DirectObject):
 
     def __init__(self, image):
 
-        tex = loader.loadTexture(GAME+'/textures/blueprints/'+image+'.png')
+        tex = loader.loadTexture(f'{GAME}/textures/blueprints/{image}.png')
         tex.setMagfilter(Texture.FTNearest)
         tex.setMinfilter(Texture.FTNearest)
 
@@ -178,14 +178,14 @@ class PartyListWindow(DirectObject.DirectObject):
         self.command = command
         self.createpartycommand = createpartycommand
 
-        tex = loader.loadTexture(GAME+'/textures/gui/parties_window.png')
+        tex = loader.loadTexture(f'{GAME}/textures/gui/parties_window.png')
         tex.setMagfilter(Texture.FTNearest)
         tex.setMinfilter(Texture.FTNearest)
-    
+
         self.frame = DirectFrame( frameTexture = tex, color = (1, 1, 1, 1), frameSize = ( -v*128.0, v*128.0, -v*128.0, v*128.0 ), scale=0.1 )
         self.frame.setTransparency(True)
-        
-        cptexture = loader.loadTexture(GAME+'/textures/gui/create_party.png')
+
+        cptexture = loader.loadTexture(f'{GAME}/textures/gui/create_party.png')
         cptexture.setMagfilter(Texture.FTNearest)
         cptexture.setMinfilter(Texture.FTNearest)
 
@@ -197,7 +197,7 @@ class PartyListWindow(DirectObject.DirectObject):
             scale = 1.0,
         )
         self.cpframe.setTransparency(True)
-        
+
         Sequence(
             Parallel(
                 LerpScaleInterval(self.frame, 0.1, 1, startScale=0.1 ),
@@ -265,7 +265,7 @@ class PartyListWindow(DirectObject.DirectObject):
                 parent = self.frame
             )
             mapLabel.setPos(v*20, 0, v*49 - i*v*16)
-            
+
             commands[key] = functools.partial(self.command, key)
             commands[key].__name__ = str(key)
             buttons[key] = DirectButton(
@@ -300,11 +300,11 @@ class MoveCheck(DirectObject.DirectObject):
             { 'text': 'No',    'enabled': True, 'pos': (v*45.5,0,v*(self.offset-self.height*1)), 'command': cancelcommand },
         ]
 
-        tex = loader.loadTexture(GAME+'/textures/gui/move_check.png')
+        tex = loader.loadTexture(f'{GAME}/textures/gui/move_check.png')
         tex.setMagfilter(Texture.FTNearest)
         tex.setMinfilter(Texture.FTNearest)
 
-        handtexture = loader.loadTexture(GAME+'/textures/gui/hand.png')
+        handtexture = loader.loadTexture(f'{GAME}/textures/gui/hand.png')
         handtexture.setMagfilter(Texture.FTNearest)
         handtexture.setMinfilter(Texture.FTNearest)
 
@@ -404,11 +404,11 @@ class AttackCheck(DirectObject.DirectObject):
             { 'text': 'Quit',    'enabled': True, 'pos': (-v*8.5,0,v*(self.offset-self.height*1)), 'command': cancelcommand },
         ]
 
-        tex = loader.loadTexture(GAME+'/textures/gui/attack_check.png')
+        tex = loader.loadTexture(f'{GAME}/textures/gui/attack_check.png')
         tex.setMagfilter(Texture.FTNearest)
         tex.setMinfilter(Texture.FTNearest)
 
-        handtexture = loader.loadTexture(GAME+'/textures/gui/hand.png')
+        handtexture = loader.loadTexture(f'{GAME}/textures/gui/hand.png')
         handtexture.setMagfilter(Texture.FTNearest)
         handtexture.setMinfilter(Texture.FTNearest)
 
@@ -559,10 +559,13 @@ class CharBarsLeft:
         )
         self.fbgframe.setTransparency(True)
 
-        facetex = loader.loadTexture(GAME+'/textures/sprites/'+char['sprite']+'_face.png')
+        facetex = loader.loadTexture(
+            f'{GAME}/textures/sprites/' + char['sprite'] + '_face.png'
+        )
+
         facetex.setMagfilter(Texture.FTNearest)
         facetex.setMinfilter(Texture.FTNearest)
-        
+
         self.face = DirectFrame(
             frameTexture = facetex, 
             frameColor=(1, 1, 1, 1),
@@ -570,7 +573,7 @@ class CharBarsLeft:
             parent = self.fbgframe,
         )
         self.face.setPos(-v*17, 0, -v*31)
-        
+
         self.frame = DirectFrame(
             frameColor=(1, 1, 1, 0),
             frameSize = ( -v*64.0, v*64.0, -v*32.0, v*32.0 ),
@@ -627,7 +630,7 @@ class CharBarsLeft:
             { 'x':   0, 'z':  23, 'text':   'Lv.'                , 'font': smwhitefont },
             { 'x':  27, 'z':  23, 'text':  'Exp.'                , 'font': smwhitefont },
         ]
-        
+
         for info in infos:
             label = DirectLabel(
                 text = info['text'],
@@ -661,11 +664,14 @@ class CharBarsRight:
             pos = (2, 0, -v*82)
         )
         self.fbgframe.setTransparency(True)
-        
-        facetex = loader.loadTexture(GAME+'/textures/sprites/'+char['sprite']+'_face.png')
+
+        facetex = loader.loadTexture(
+            f'{GAME}/textures/sprites/' + char['sprite'] + '_face.png'
+        )
+
         facetex.setMagfilter(Texture.FTNearest)
         facetex.setMinfilter(Texture.FTNearest)
-        
+
         self.face = DirectFrame(
             frameTexture = facetex, 
             frameColor=(1, 1, 1, 1),
@@ -673,7 +679,7 @@ class CharBarsRight:
             parent = self.fbgframe,
         )
         self.face.setPos(-v*(59-42), 0, -v*31)
-        
+
         self.frame = DirectFrame(
             frameColor=(1, 1, 1, 0),
             frameSize = ( -v*64.0, v*64.0, -v*32.0, v*32.0 ),
@@ -692,7 +698,7 @@ class CharBarsRight:
             pos = (-v*87, 0, v*14),
         )
         self.hpbar.setTransparency(True)
-        
+
         bar = Bar(bar='bar-2')
         bar.updateTo(int(float(char['mp'])/float(char['mpmax'])*100))
         self.mpbar = DirectFrame(
@@ -703,7 +709,7 @@ class CharBarsRight:
             pos = (-v*87, 0, v*3),
         )
         self.mpbar.setTransparency(True)
-        
+
         bar = Bar(bar='bar-3')
         bar.updateTo(int(char['ct']))
         self.ctbar = DirectFrame(
@@ -730,7 +736,7 @@ class CharBarsRight:
             { 'x':    3, 'z': -31, 'text':   'Lv.'                , 'font': smwhitefont },
             { 'x':   31, 'z': -31, 'text':  'Exp.'                , 'font': smwhitefont },
         ]
-        
+
         for info in infos:
             label = DirectLabel(
                 text = info['text'],
@@ -758,7 +764,7 @@ class CharBarsRight:
 class CharCard:
 
     def __init__(self, char):
-        blacktex = loader.loadTexture(GAME+'/textures/gui/black.png')
+        blacktex = loader.loadTexture(f'{GAME}/textures/gui/black.png')
         blacktex.setMagfilter(Texture.FTNearest)
         blacktex.setMinfilter(Texture.FTNearest)
 
@@ -771,7 +777,7 @@ class CharCard:
         self.blackframe.setTransparency(True)
         self.blackframe.setPos(0, 0, u*-82)
 
-        tex = loader.loadTexture(GAME+'/textures/gui/char_card.png')
+        tex = loader.loadTexture(f'{GAME}/textures/gui/char_card.png')
         tex.setMagfilter(Texture.FTNearest)
         tex.setMinfilter(Texture.FTNearest)
 
@@ -806,7 +812,10 @@ class CharCard:
         self.name.setPos(-v*33, 0, -v*4)
 
         teamcolors = ['blue','red','green']
-        ledtex = loader.loadTexture(GAME+'/textures/gui/led_'+teamcolors[int(char['team'])]+'.png')
+        ledtex = loader.loadTexture(
+            f'{GAME}/textures/gui/led_' + teamcolors[int(char['team'])] + '.png'
+        )
+
         ledtex.setMagfilter(Texture.FTNearest)
         ledtex.setMinfilter(Texture.FTNearest)
 
@@ -820,7 +829,10 @@ class CharCard:
         self.led.setPos(-v*49, 0, v*18)
 
         signs = ['aries','scorpio']
-        signtex = loader.loadTexture(GAME+'/textures/gui/'+signs[int(char['sign'])]+'.png')
+        signtex = loader.loadTexture(
+            f'{GAME}/textures/gui/' + signs[int(char['sign'])] + '.png'
+        )
+
         signtex.setMagfilter(Texture.FTNearest)
         signtex.setMinfilter(Texture.FTNearest)
 
@@ -878,8 +890,8 @@ class ActionPreview(DirectObject.DirectObject):
     def __init__(self, char1, char2, damages, chance, command, cancelcommand):
         self.command = command
         self.cancelcommand = cancelcommand
-    
-        blacktex = loader.loadTexture(GAME+'/textures/gui/black.png')
+
+        blacktex = loader.loadTexture(f'{GAME}/textures/gui/black.png')
         blacktex.setMagfilter(Texture.FTNearest)
         blacktex.setMinfilter(Texture.FTNearest)
 
@@ -898,11 +910,14 @@ class ActionPreview(DirectObject.DirectObject):
             pos = (-2, 0, -v*82)
         )
         self.fbgframe1.setTransparency(True)
-        
-        facetex1 = loader.loadTexture(GAME+'/textures/sprites/'+char1['sprite']+'_face.png')
+
+        facetex1 = loader.loadTexture(
+            f'{GAME}/textures/sprites/' + char1['sprite'] + '_face.png'
+        )
+
         facetex1.setMagfilter(Texture.FTNearest)
         facetex1.setMinfilter(Texture.FTNearest)
-        
+
         self.face1 = DirectFrame(
             frameTexture = facetex1, 
             frameColor=(1, 1, 1, 1),
@@ -910,7 +925,7 @@ class ActionPreview(DirectObject.DirectObject):
             parent = self.fbgframe1,
         )
         self.face1.setPos(-v*(59-42), 0, -v*31)
-        
+
         self.frame1 = DirectFrame(
             frameColor=(1, 1, 1, 0),
             frameSize = ( -v*64.0, v*64.0, -v*32.0, v*32.0 ),
@@ -919,10 +934,10 @@ class ActionPreview(DirectObject.DirectObject):
         self.frame1.setPos(v*46, 0, -v*9)
         self.frame1.setTransparency(True)
 
-        atex = loader.loadTexture(GAME+'/textures/gui/action_preview_arrow.png')
+        atex = loader.loadTexture(f'{GAME}/textures/gui/action_preview_arrow.png')
         atex.setMagfilter(Texture.FTNearest)
         atex.setMinfilter(Texture.FTNearest)
-        
+
         self.arrow = DirectFrame(
             frameTexture = atex, 
             frameColor=(1, 1, 1, 1),
@@ -977,7 +992,7 @@ class ActionPreview(DirectObject.DirectObject):
             { 'x': -33, 'z':  -3, 'text':    'Mp'                 , 'font': smwhitefont },
             { 'x': -33, 'z': -13, 'text':    'Ct'                 , 'font': smwhitefont },
         ]
-        
+
         for info in infos:
             label = DirectLabel(
                 text = info['text'],
@@ -998,10 +1013,13 @@ class ActionPreview(DirectObject.DirectObject):
         )
         self.fbgframe2.setTransparency(True)
 
-        facetex2 = loader.loadTexture(GAME+'/textures/sprites/'+char2['sprite']+'_face.png')
+        facetex2 = loader.loadTexture(
+            f'{GAME}/textures/sprites/' + char2['sprite'] + '_face.png'
+        )
+
         facetex2.setMagfilter(Texture.FTNearest)
         facetex2.setMinfilter(Texture.FTNearest)
-        
+
         self.face2 = DirectFrame(
             frameTexture = facetex2, 
             frameColor=(1, 1, 1, 1),
@@ -1009,7 +1027,7 @@ class ActionPreview(DirectObject.DirectObject):
             parent = self.fbgframe2,
         )
         self.face2.setPos(-v*(59-42), 0, -v*31)
-        
+
         self.frame2 = DirectFrame(
             frameColor=(1, 1, 1, 0),
             frameSize = ( -v*64.0, v*64.0, -v*32.0, v*32.0 ),
@@ -1028,7 +1046,7 @@ class ActionPreview(DirectObject.DirectObject):
             pos = (-v*87, 0, v*14),
         )
         self.hpbar.setTransparency(True)
-        
+
         bar = Bar(bar='bar-2')
         bar.updateTo(int(float(char2['mp'])/float(char2['mpmax'])*100))
         self.mpbar = DirectFrame(
@@ -1039,7 +1057,7 @@ class ActionPreview(DirectObject.DirectObject):
             pos = (-v*87, 0, v*3),
         )
         self.mpbar.setTransparency(True)
-        
+
         bar = Bar(bar='bar-3')
         bar.updateTo(int(char2['ct']))
         self.ctbar = DirectFrame(
@@ -1062,7 +1080,7 @@ class ActionPreview(DirectObject.DirectObject):
             { 'x':  -33, 'z':  -3, 'text':    'Mp'                 , 'font': smwhitefont },
             { 'x':  -33, 'z': -13, 'text':    'Ct'                 , 'font': smwhitefont },
         ]
-        
+
         for info in infos:
             label = DirectLabel(
                 text = info['text'],
@@ -1120,8 +1138,8 @@ class BrownOverlay(DirectObject.DirectObject):
         
         self.callback = callback
         self.r = 20
-        self.frames = [ [ None for y in range(self.r) ] for x in range(self.r) ]
-        
+        self.frames = [[None for _ in range(self.r)] for _ in range(self.r)]
+
         for x in range(self.r):
             for y in range(self.r):
                 frame = DirectFrame(
@@ -1173,7 +1191,7 @@ class ConditionsForWinning(DirectObject.DirectObject):
 
     def __init__(self, callback):
         
-        cfwtex = loader.loadTexture(GAME+'/textures/gui/conditions_for_winning.png')
+        cfwtex = loader.loadTexture(f'{GAME}/textures/gui/conditions_for_winning.png')
         cfwtex.setMagfilter(Texture.FTNearest)
         cfwtex.setMinfilter(Texture.FTNearest)
         cfw = DirectFrame(
@@ -1184,7 +1202,7 @@ class ConditionsForWinning(DirectObject.DirectObject):
         )
         cfw.setTransparency(True)
 
-        daetex = loader.loadTexture(GAME+'/textures/gui/defeat_all_enemies.png')
+        daetex = loader.loadTexture(f'{GAME}/textures/gui/defeat_all_enemies.png')
         daetex.setMagfilter(Texture.FTNearest)
         daetex.setMinfilter(Texture.FTNearest)
         dae = DirectFrame(
@@ -1195,7 +1213,7 @@ class ConditionsForWinning(DirectObject.DirectObject):
         )
         dae.setTransparency(True)
 
-        readytex = loader.loadTexture(GAME+'/textures/gui/ready.png')
+        readytex = loader.loadTexture(f'{GAME}/textures/gui/ready.png')
         readytex.setMagfilter(Texture.FTNearest)
         readytex.setMinfilter(Texture.FTNearest)
         ready = DirectFrame(
@@ -1228,7 +1246,7 @@ class Congratulations(DirectObject.DirectObject):
 
     def __init__(self, callback):
         
-        ggtex = loader.loadTexture(GAME+'/textures/gui/congratulations.png')
+        ggtex = loader.loadTexture(f'{GAME}/textures/gui/congratulations.png')
         ggtex.setMagfilter(Texture.FTNearest)
         ggtex.setMinfilter(Texture.FTNearest)
         gg = DirectFrame(
@@ -1239,7 +1257,7 @@ class Congratulations(DirectObject.DirectObject):
         )
         gg.setTransparency(True)
 
-        bctex = loader.loadTexture(GAME+'/textures/gui/battle_complete.png')
+        bctex = loader.loadTexture(f'{GAME}/textures/gui/battle_complete.png')
         bctex.setMagfilter(Texture.FTNearest)
         bctex.setMinfilter(Texture.FTNearest)
         bc = DirectFrame(
@@ -1269,7 +1287,7 @@ class GameOver(DirectObject.DirectObject):
 
     def __init__(self, callback):
         
-        gotex = loader.loadTexture(GAME+'/textures/gui/game_over.png')
+        gotex = loader.loadTexture(f'{GAME}/textures/gui/game_over.png')
         gotex.setMagfilter(Texture.FTNearest)
         gotex.setMinfilter(Texture.FTNearest)
         go = DirectFrame(
@@ -1296,7 +1314,7 @@ class MapChooser(DirectObject.DirectObject):
         self.current = 0
         self.maplist = maplist
 
-        loadingtexture = loader.loadTexture(GAME+'/textures/gui/now_loading.png')
+        loadingtexture = loader.loadTexture(f'{GAME}/textures/gui/now_loading.png')
         loadingtexture.setMagfilter(Texture.FTNearest)
         loadingtexture.setMinfilter(Texture.FTNearest)
 
@@ -1310,7 +1328,7 @@ class MapChooser(DirectObject.DirectObject):
         self.loadingframe.setTransparency(True)
 
         for mapinfo in self.maplist:
-            terrain = loader.loadModel(GAME+'/models/maps/'+mapinfo['model'])
+            terrain = loader.loadModel(f'{GAME}/models/maps/' + mapinfo['model'])
             terrain.setTransparency(TransparencyAttrib.MAlpha)
             terrain.setScale( *[ x/25.0 for x in mapinfo['scale'] ] )
             terrain.setDepthWrite(True)
@@ -1327,7 +1345,7 @@ class MapChooser(DirectObject.DirectObject):
 
         self.loadingframe.destroy()
 
-        l1texture = loader.loadTexture(GAME+'/textures/gui/L1.png')
+        l1texture = loader.loadTexture(f'{GAME}/textures/gui/L1.png')
         l1texture.setMagfilter(Texture.FTNearest)
         l1texture.setMinfilter(Texture.FTNearest)
 
@@ -1340,7 +1358,7 @@ class MapChooser(DirectObject.DirectObject):
         )
         self.l1frame.setTransparency(True)
 
-        r1texture = loader.loadTexture(GAME+'/textures/gui/R1.png')
+        r1texture = loader.loadTexture(f'{GAME}/textures/gui/R1.png')
         r1texture.setMagfilter(Texture.FTNearest)
         r1texture.setMinfilter(Texture.FTNearest)
 
@@ -1353,7 +1371,7 @@ class MapChooser(DirectObject.DirectObject):
         )
         self.r1frame.setTransparency(True)
 
-        starttexture = loader.loadTexture(GAME+'/textures/gui/start_end.png')
+        starttexture = loader.loadTexture(f'{GAME}/textures/gui/start_end.png')
         starttexture.setMagfilter(Texture.FTNearest)
         starttexture.setMinfilter(Texture.FTNearest)
 
@@ -1365,7 +1383,7 @@ class MapChooser(DirectObject.DirectObject):
             scale = 1.0,
         )
         self.startframe.setTransparency(True)
-        
+
         seq = Sequence(
             Parallel(
                 LerpPosInterval(self.l1frame, 0.25, (-.9, 0, .8), (-.9, 0, 1.0)),
@@ -1383,8 +1401,8 @@ class MapChooser(DirectObject.DirectObject):
         self.accept(START_BTN,        self.onStartClicked)
         self.accept(L1_BTN,           self.onL1Clicked)
         self.accept(R1_BTN,           self.onR1Clicked)
-        self.accept(L1_BTN+"-repeat", self.onL1Clicked)
-        self.accept(L1_BTN+"-repeat", self.onR1Clicked)
+        self.accept(f"{L1_BTN}-repeat", self.onL1Clicked)
+        self.accept(f"{L1_BTN}-repeat", self.onR1Clicked)
 
     def onCrossClicked(self):
         cancel_snd.play()
@@ -1416,7 +1434,7 @@ class MapChooser(DirectObject.DirectObject):
     def unloadTerrains(self):
         for mapinfo in self.maplist:
             mapinfo['terrain'].removeNode()
-            loader.unloadModel(GAME+'/models/maps/'+mapinfo['model'])
+            loader.unloadModel(f'{GAME}/models/maps/' + mapinfo['model'])
         del self.maplist
 
     def onR1Clicked(self):

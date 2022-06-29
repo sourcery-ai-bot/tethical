@@ -71,52 +71,52 @@ class KeyboardTileTraverser(DirectObject):
 
     # You clicked on a tile, this can mean different things, so this is a dispatcher
     def onCircleClicked(self):
-        if self.client.cursor.x is not False and self.client.party['yourturn']:
+        if self.client.cursor.x is False or not self.client.party['yourturn']:
+            return
+        x = self.client.cursor.x
+        y = self.client.cursor.y
+        z = self.client.cursor.z
 
-            x = self.client.cursor.x
-            y = self.client.cursor.y
-            z = self.client.cursor.z
+        if self.client.charcard:
+            self.client.charcard.hide()
 
-            if self.client.charcard:
-                self.client.charcard.hide()
+        # we clicked an active walkable tile, let's move the character
+        if self.client.party['map']['tiles'][x][y][z].has_key('walkablezone'):
+            charid = self.client.party['map']['tiles'][x][y][z]['walkablezone']
+            self.client.clicked_snd.play()
+            dest = (x, y, z)
+            self.client.send.GET_PATH(charid, dest)
+            return
 
-            # we clicked an active walkable tile, let's move the character
-            if self.client.party['map']['tiles'][x][y][z].has_key('walkablezone'):
-                charid = self.client.party['map']['tiles'][x][y][z]['walkablezone']
-                self.client.clicked_snd.play()
-                dest = (x, y, z)
-                self.client.send.GET_PATH(charid, dest)
-                return
+        # we clicked on a character
+        if self.client.party['map']['tiles'][x][y][z].has_key('char'):
+            charid = self.client.party['map']['tiles'][x][y][z]['char']
+            self.client.clicked_snd.play()
 
-            # we clicked on a character
-            if self.client.party['map']['tiles'][x][y][z].has_key('char'):
-                charid = self.client.party['map']['tiles'][x][y][z]['char']
-                self.client.clicked_snd.play()
-
-                # we clicked on a target, let's attack it!
-                if self.client.party['map']['tiles'][x][y][z].has_key('attackablezone'):
-                    attackable = self.client.party['map']['tiles'][x][y][z]['attackablezone']
-                    self.ignoreAll()
-                    if self.client.charbars:
-                        self.client.charbars.hide()
-                    self.client.actionpreview = GUI.ActionPreview(
-                        self.client.party['chars'][attackable],
-                        self.client.party['chars'][charid],
-                        16,
-                        99,
-                        lambda: GUI.AttackCheck(
-                            lambda: self.client.send.ATTACK(attackable, charid),
-                            self.client.send.UPDATE_PARTY
-                        ),
+            # we clicked on a target, let's attack it!
+            if self.client.party['map']['tiles'][x][y][z].has_key('attackablezone'):
+                attackable = self.client.party['map']['tiles'][x][y][z]['attackablezone']
+                self.ignoreAll()
+                if self.client.charbars:
+                    self.client.charbars.hide()
+                self.client.actionpreview = GUI.ActionPreview(
+                    self.client.party['chars'][attackable],
+                    self.client.party['chars'][charid],
+                    16,
+                    99,
+                    lambda: GUI.AttackCheck(
+                        lambda: self.client.send.ATTACK(attackable, charid),
                         self.client.send.UPDATE_PARTY
-                    )
+                    ),
+                    self.client.send.UPDATE_PARTY
+                )
 
-                # we clicked on the currently active character, let's display the menu
-                elif self.client.party['chars'][charid]['active'] and self.client.party['yourturn']:
-                    self.client.send.UPDATE_PARTY()
-            else:
-                self.client.clicked_snd.play()
+            # we clicked on the currently active character, let's display the menu
+            elif self.client.party['chars'][charid]['active'] and self.client.party['yourturn']:
                 self.client.send.UPDATE_PARTY()
+        else:
+            self.client.clicked_snd.play()
+            self.client.send.UPDATE_PARTY()
     
     def onCrossClicked(self):
         if self.client.cursor.x is not False and self.client.party['yourturn']:
@@ -157,14 +157,17 @@ class KeyboardTileTraverser(DirectObject):
         for x,xs in enumerate(self.client.party['map']['tiles']):
             for y,ys in enumerate(xs):
                 for z,zs in enumerate(ys):
-                    if not self.client.party['map']['tiles'][x][y][z] is None:
-                        if fux == x and fuy == y:
-                            d = math.fabs(z-self.client.cursor.z) # for each possible, compute the Z delta with the current tile
-                            possibles.append((x, y, z, d))
+                    if (
+                        self.client.party['map']['tiles'][x][y][z] is not None
+                        and fux == x
+                        and fuy == y
+                    ):
+                        d = math.fabs(z-self.client.cursor.z) # for each possible, compute the Z delta with the current tile
+                        possibles.append((x, y, z, d))
 
         if len(possibles):
             # sort the possibles on Z delta, and get the closer tile
-            selected = sorted(possibles, key=itemgetter(3))[0][0:3]
+            selected = sorted(possibles, key=itemgetter(3))[0][:3]
 
             self.client.hover_snd.play()
             self.client.updateCursorPos(selected)

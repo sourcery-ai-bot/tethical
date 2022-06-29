@@ -211,25 +211,13 @@ class Sprite2d:
    
     def flipX(self, val=None):
         """ Flip the sprite on X. If no value given, it will invert the current flipping."""
-        if val:
-            self.flip['x'] = val
-        else:
-            if self.flip['x']:
-                self.flip['x'] = False
-            else:
-                self.flip['x'] = True
+        self.flip['x'] = val or not self.flip['x']
         self.flipTexture()
         return self.flip['x']
        
     def flipY(self, val=None):
         """ See flipX """
-        if val:
-            self.flip['y'] = val
-        else:
-            if self.flip['y']:
-                self.flip['y'] = False
-            else:
-                self.flip['y'] = True
+        self.flip['y'] = val or not self.flip['y']
         self.flipTexture()
         return self.flip['y']
 

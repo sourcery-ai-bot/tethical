@@ -7,7 +7,7 @@ from direct.task.Task import Task
 class DirectionChooser(DirectObject):
     
     def __init__(self, charid, sprite, camhandler, callback, cancelcallback):
-    
+
         self.charid = charid
         self.sprite = sprite
         self.camhandler = camhandler
@@ -17,17 +17,17 @@ class DirectionChooser(DirectObject):
         self.hidir = None
 
         # Textures
-        self.readytex = loader.loadTexture(GAME+'/textures/gui/direction.png')
+        self.readytex = loader.loadTexture(f'{GAME}/textures/gui/direction.png')
         self.readytex.setMagfilter(Texture.FTNearest)
         self.readytex.setMinfilter(Texture.FTNearest)
-        self.hovertex = loader.loadTexture(GAME+'/textures/gui/direction_hover.png')
+        self.hovertex = loader.loadTexture(f'{GAME}/textures/gui/direction_hover.png')
         self.hovertex.setMagfilter(Texture.FTNearest)
         self.hovertex.setMinfilter(Texture.FTNearest)
 
         # Sounds
-        self.hover_snd   = base.loader.loadSfx(GAME+'/sounds/hover.ogg')
-        self.clicked_snd = base.loader.loadSfx(GAME+'/sounds/clicked.ogg')
-        self.cancel_snd  = base.loader.loadSfx(GAME+'/sounds/cancel.ogg')
+        self.hover_snd = base.loader.loadSfx(f'{GAME}/sounds/hover.ogg')
+        self.clicked_snd = base.loader.loadSfx(f'{GAME}/sounds/clicked.ogg')
+        self.cancel_snd = base.loader.loadSfx(f'{GAME}/sounds/cancel.ogg')
 
         # Buttons list
         self.directionbuttons = []

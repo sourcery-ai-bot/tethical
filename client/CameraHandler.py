@@ -25,10 +25,10 @@ class CameraHandler(DirectObject.DirectObject):
 
         self.zoomed = True
         self.r      = False
-        
+
         # Load sounds
-        self.toggle_r_snd = base.loader.loadSfx(GAME+'/sounds/camera_toggle_r.ogg')
-        self.rotate_snd   = base.loader.loadSfx(GAME+'/sounds/camera_rotate.ogg')
+        self.toggle_r_snd = base.loader.loadSfx(f'{GAME}/sounds/camera_toggle_r.ogg')
+        self.rotate_snd = base.loader.loadSfx(f'{GAME}/sounds/camera_rotate.ogg')
 
         self.acceptAll()
         self.windowEvent(base.win)

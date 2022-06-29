@@ -9,7 +9,7 @@ GAME = ConfigVariableString('game', 'fft').getValue()
 def execute(server, iterator, source):
     server.playersinlobby.remove(source)
 
-    mapnames = map( lambda m: m.split('.')[0], os.listdir(GAME+'/maps'))
+    mapnames = map(lambda m: m.split('.')[0], os.listdir(f'{GAME}/maps'))
 
     maps = []
     for mapname in mapnames:

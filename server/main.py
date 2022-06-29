@@ -26,14 +26,10 @@ class Server:
         self.cReader.setTcpHeaderSize(4)
         self.send = Send(self.cManager)
 
-        port = 3001
-        if len(sys.argv) > 1:
-            port = sys.argv[1]
-
+        port = sys.argv[1] if len(sys.argv) > 1 else 3001
         self.tcpSocket = self.cManager.openTCPServerRendezvous(port, 10)
         self.cListener.addConnection(self.tcpSocket)
-        print "Server listening on port", port
-
+        self.activeConnections = [] # lists all connections
         taskMgr.add(self.tskListenerPolling, "Poll the connection listener", -39)
         taskMgr.add(self.tskReaderPolling, "Poll the connection reader", -40)
 

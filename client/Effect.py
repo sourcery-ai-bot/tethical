@@ -5,12 +5,12 @@ import xml.etree.cElementTree as etree
 import math
 
 def transparencyKey(filename):
-    image = PNMImage(GAME+'/textures/effects/'+filename)
+    image = PNMImage(f'{GAME}/textures/effects/{filename}')
     image.addAlpha()
     backgroundColor = None
     for y in range(image.getYSize()):
         for x in range(image.getXSize()):
-            if backgroundColor == None:
+            if backgroundColor is None:
                 backgroundColor = Color(image.getRedVal(x, y), image.getGreenVal(x, y), image.getGreenVal(x, y), 0)
             if image.getRedVal(x, y) == backgroundColor.R and \
                 image.getGreenVal(x, y) == backgroundColor.G and \
@@ -19,7 +19,7 @@ def transparencyKey(filename):
                 image.setAlpha(x, y, 0.0)
             else:
                 # Opaque
-                image.setAlpha(x, y, 1.0) 
+                image.setAlpha(x, y, 1.0)
     return image
 
 class Point:
@@ -51,24 +51,18 @@ class Tween:
     frameLength = 0
     advancementFunction = "linear"
     def __init__(self, frameLength, advancementFunction, points, colors):
-        if points != None and points != []:
-            if len(points) > 1:
-                runningDistanceTotal = 0
-                for i in range(1, len(points), 1):
-                    line = Line(points[i - 1], points[i], runningDistanceTotal);
-                    self.lineSegments.append(line)
-                    runningDistanceTotal = runningDistanceTotal + line.distance
-                    pass
-                pass
-            pass
+        if points not in [None, []] and len(points) > 1:
+            runningDistanceTotal = 0
+            for i in range(1, len(points)):
+                line = Line(points[i - 1], points[i], runningDistanceTotal);
+                self.lineSegments.append(line)
+                runningDistanceTotal = runningDistanceTotal + line.distance
         self.colorList = colors
         self.frameLength = frameLength
         self.advancementFunction = advancementFunction
 
     def hasColorComponent(self):
-        if len(self.colorList) > 0:
-            return True
-        return False
+        return len(self.colorList) > 0
 
     def colorFromFrame(self, frame):
         if frame < 1:
@@ -83,7 +77,7 @@ class Tween:
             endIndex = 0
             zeroToOneStartIndex = 0
             zeroToOneEndIndex = 1.0
-            for i in range(0, len(self.colorList)-1, 1):
+            for i in range(len(self.colorList)-1):
                 thisZeroToOneIndex = float(i+1) / float(len(self.colorList))
                 if thisZeroToOneIndex == zeroToOneIndex:
                     startIndex = i
@@ -110,24 +104,27 @@ class Tween:
     def XYFromFrame(self, frame):
         if frame < 1:
             return Point(0, 0, 0)
-        else:
-            fullLength = self.lengthOfLineSegments()
-            distance = float(frame-1)*fullLength/float(self.frameLength)
-            if frame <= self.frameLength:
-                lineThatContainsPoint = None
-                for i in range(0, len(self.lineSegments)-1, 1):
-                    if self.lineSegments[i].distanceLeadingUpToLine <= distance and (self.lineSegments[i].distanceLeadingUpToLine + self.lineSegments[i].distance) >= distance:
-                        lineThatContainsPoints = self.lineSegments[i]
-                        break
-                if lineThatContainsPoint != None:
-                    return lineThatContainsPoint.Distance(distance - lineThatContainsPoint.distanceLeadingUpToLine)
-                else:
-                    return Point(0,0,0)
-            else:
-                if len(self.lineSegments)>0:
-                    return self.lineSegments[len(self.lineSegments)-1].End
-                else:
-                    return Point(0,0,0)
+        fullLength = self.lengthOfLineSegments()
+        distance = float(frame-1)*fullLength/float(self.frameLength)
+        if frame > self.frameLength:
+            return (
+                self.lineSegments[len(self.lineSegments) - 1].End
+                if len(self.lineSegments) > 0
+                else Point(0, 0, 0)
+            )
+
+        lineThatContainsPoint = None
+        for i in range(len(self.lineSegments)-1):
+            if self.lineSegments[i].distanceLeadingUpToLine <= distance and (self.lineSegments[i].distanceLeadingUpToLine + self.lineSegments[i].distance) >= distance:
+                lineThatContainsPoints = self.lineSegments[i]
+                break
+        return (
+            lineThatContainsPoint.Distance(
+                distance - lineThatContainsPoint.distanceLeadingUpToLine
+            )
+            if lineThatContainsPoint != None
+            else Point(0, 0, 0)
+        )
 
 class Bound:
     X = 0
@@ -172,10 +169,7 @@ class Frame:
         self.blendMode = blendMode
         self.scaleX = scaleX
         self.scaleY = scaleY
-        if color != None:
-            self.color = color
-        else: # TODO: Find logic error in color from frame.
-            self.color = Color(1,1,1,1)
+        self.color = color if color != None else Color(1,1,1,1)
         self.rotationZ = rotationZ
     def printAsString(self):
         print "["+str(self)+"]::"
@@ -227,8 +221,6 @@ class Effect:
             self.loadedFormat = effectFileNameSplit[len(effectFileNameSplit)-2] # Get value at penultimate index
             if self.loadedFormat == effectFileNameSplit[0]:
                 self.loadedFormat = None # Get rid of bad format name.
-            pass
-            
         # Load texture; supply alpha channel if it doesn't exist.
         p = transparencyKey(effectFileName)
         self.tex = Texture()
@@ -236,43 +228,81 @@ class Effect:
         self.tex.load(p)
         if self.loadedFormat != None:
             try:
-                self.tree = etree.parse("./"+GAME+"/effects/"+self.loadedFormat+"/sprite.xml")
+                self.tree = etree.parse(f"./{GAME}/effects/{self.loadedFormat}/sprite.xml")
             except IOError:
                 self.loadedFormat = None
-            pass
         if self.loadedFormat != None: 
             root = self.tree.getroot()
             self.frames = root.find('.//frames')
             self.colors = root.find('.//colors')
             self.tweens = root.find('.//motion-tweens')
             self.compositeFrames = root.find('.//composite-frames')
-            self.baseWidth = 0 if root.attrib.get("base-width") == None else float(root.attrib.get("base-width"))
-            self.baseHeight = 0 if root.attrib.get("base-height") == None else float(root.attrib.get("base-height"))
-            self.effectWidth = 1 if root.attrib.get("frame-width") == None else float(root.attrib.get("frame-width"))
-            self.effectHeight = 1 if root.attrib.get("frame-height") == None else float(root.attrib.get("frame-height"))
-            self.effectTargetMS = 143 if root.attrib.get("target-ms") == None else float(root.attrib.get("target-ms"))
-            self.startIndex = 1 if root.attrib.get("target-start") == None else int(root.attrib.get("target-start"))
-            self.endIndex = 1 if root.attrib.get("target-end") == None else int(root.attrib.get("target-end"))
-            self.noSampling = False if root.attrib.get("no-sampling") == None else bool(root.attrib.get("no-sampling"))
-            if self.noSampling==True:
+            self.baseWidth = (
+                0
+                if root.attrib.get("base-width") is None
+                else float(root.attrib.get("base-width"))
+            )
+
+            self.baseHeight = (
+                0
+                if root.attrib.get("base-height") is None
+                else float(root.attrib.get("base-height"))
+            )
+
+            self.effectWidth = (
+                1
+                if root.attrib.get("frame-width") is None
+                else float(root.attrib.get("frame-width"))
+            )
+
+            self.effectHeight = (
+                1
+                if root.attrib.get("frame-height") is None
+                else float(root.attrib.get("frame-height"))
+            )
+
+            self.effectTargetMS = (
+                143
+                if root.attrib.get("target-ms") is None
+                else float(root.attrib.get("target-ms"))
+            )
+
+            self.startIndex = (
+                1
+                if root.attrib.get("target-start") is None
+                else int(root.attrib.get("target-start"))
+            )
+
+            self.endIndex = (
+                1
+                if root.attrib.get("target-end") is None
+                else int(root.attrib.get("target-end"))
+            )
+
+            self.noSampling = (
+                False
+                if root.attrib.get("no-sampling") is None
+                else bool(root.attrib.get("no-sampling"))
+            )
+
+            if self.noSampling:
                 self.tex.setMagfilter(Texture.FTNearest)
                 self.tex.setMinfilter(Texture.FTNearest)
-            cm = CardMaker('card-'+effectFileName)
+            cm = CardMaker(f'card-{effectFileName}')
             cardDeltaX = self.effectWidth / self.pixelScaleX
             cardDeltaZ = self.effectHeight / self.pixelScaleZ
             if self.effectIsCentered == True:
                 cm.setFrame(0, 0, 0, 0)
                 deltaX = (cardDeltaX/2.0) - (-cardDeltaX/2.0)
-                deltaY = 0
                 deltaZ = (cardDeltaZ/2.0) - (-cardDeltaZ/2.0)
-                #occluder = OccluderNode('effect-parent-occluder', Point3((-cardDeltaX/2.0), 0, (-cardDeltaZ/2.0)), Point3((-cardDeltaX/2.0), 0, (cardDeltaZ/2.0)), Point3((cardDeltaX/2.0), 0, (cardDeltaZ/2.0)), Point3((cardDeltaX/2.0), 0, (-cardDeltaZ/2.0)))
+                        #occluder = OccluderNode('effect-parent-occluder', Point3((-cardDeltaX/2.0), 0, (-cardDeltaZ/2.0)), Point3((-cardDeltaX/2.0), 0, (cardDeltaZ/2.0)), Point3((cardDeltaX/2.0), 0, (cardDeltaZ/2.0)), Point3((cardDeltaX/2.0), 0, (-cardDeltaZ/2.0)))
             else:
                 cm.setFrame(0, 0, 0, 0)
                 deltaX = (cardDeltaX/2.0) - (-cardDeltaX/2.0)
-                deltaY = 0
                 deltaZ = cardDeltaZ - 0
-                #occluder = OccluderNode('effect-parent-occluder', Point3((-cardDeltaX/2.0), 0, 0), Point3((-cardDeltaX/2.0), 0, cardDeltaZ), Point3((cardDeltaX/2.0), 0, cardDeltaZ), Point3((cardDeltaX/2.0), 0, 0))
-            self.effectCardNodePath = render.attachNewNode(cm.generate())            
+                        #occluder = OccluderNode('effect-parent-occluder', Point3((-cardDeltaX/2.0), 0, 0), Point3((-cardDeltaX/2.0), 0, cardDeltaZ), Point3((cardDeltaX/2.0), 0, cardDeltaZ), Point3((cardDeltaX/2.0), 0, 0))
+            deltaY = 0
+            self.effectCardNodePath = render.attachNewNode(cm.generate())
             self.effectCardNodePath.setBillboardPointEye()
             self.effectCardNodePath.reparentTo(parent)
             #occluder_nodepath = self.effectCardNodePath.attachNewNode(occluder)
@@ -286,7 +316,7 @@ class Effect:
             #emptyNode.place()
             emptyNode.setSx(float(deltaX)/self.effectWidth)
             emptyNode.setSz(float(deltaZ)/self.effectHeight)
-            self.effectCameraNodePath = emptyNode                        
+            self.effectCameraNodePath = emptyNode
             if parent != None:
                 self.effectCardNodePath.reparentTo(parent)
             else:
@@ -295,10 +325,9 @@ class Effect:
             self.effectCardNodePath.setBin("fixed", 40)
             self.effectCardNodePath.setDepthTest(False)
             self.effectCardNodePath.setDepthWrite(False)
-        pass
     def getSequence(self):
         sequence = Sequence()
-        for x in range(self.startIndex, self.endIndex, 1):
+        for _ in range(self.startIndex, self.endIndex):
             sequence.append(Func(self.pandaRender))
             sequence.append(Func(self.advanceFrame))
             sequence.append(Wait(self.effectTargetMS * 0.001))
@@ -306,13 +335,8 @@ class Effect:
         sequence.append(Func(self.advanceFrame))
         sequence.append(Wait(self.effectTargetMS * 0.001))
         return sequence
-        pass
     def hasEffectFinished(self):
-        if self.internalFrameIndex > self.endIndex and self.loopEffect == False:
-            return True
-        else:
-            return False
-        pass
+        return self.internalFrameIndex > self.endIndex and self.loopEffect == False
     def advanceFrame(self):
         if self.internalFrameIndex < self.endIndex:
             self.internalFrameIndex += 1
@@ -321,15 +345,11 @@ class Effect:
         else:
             self.internalFrameIndex = self.endIndex + 1
             self.clearNodesForDrawing()
-        pass
     def clearNodesForDrawing(self):
-        if False:
-            self.effectCameraNodePath.analyze()
-        if self.consumedNodesList != None and self.consumedNodesList != []:
+        if self.consumedNodesList not in [None, []]:
             for consumedNode in self.consumedNodesList:
                 consumedNode.removeNode()
         self.consumedNodesList = []
-        pass
     def pandaRender(self):
         frameList = []
         for node in self.compositeFrames.getiterator('composite-frame'):

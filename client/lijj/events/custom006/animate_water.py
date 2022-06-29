@@ -11,7 +11,8 @@ testName = 'map-event-test'
 thisWholeFilename = os.path.abspath(__file__)
 thisFilename = os.path.basename(os.path.abspath(__file__))
 targetMapNameWithoutExtension = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
-targetMapName = os.path.basename(os.path.dirname(os.path.abspath(__file__))) + ".json"
+targetMapName = (
+    f"{os.path.basename(os.path.dirname(os.path.abspath(__file__)))}.json")
 targetMapFullPath = ''
 # Prepare path components of event Python file.
 path = os.path.abspath(__file__)
@@ -34,8 +35,6 @@ if 'client' in folders:
 		game = os.path.join(*folders[:i+2])
 		gameName = folders[i+1]
 		targetMapFullPath = os.path.join(*folders[:i+2] + ['models', 'maps', targetMapName])
-		pass
-	pass
 
 # Prepare error class.
 class UsageError(Exception):
@@ -124,7 +123,6 @@ else:
 			def f(x, c):
 				tex = x.findTexture('*')
 				tex.load(textures[c])
-				pass
 			# Push the function to the animation sequence.
 			seq.append(Func(f, mapObject, i))
 			# Push the wait time to the animation sequence.

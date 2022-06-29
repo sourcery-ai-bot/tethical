@@ -3,7 +3,7 @@ from panda3d.core import loadPrcFile
 from pandac.PandaModules import ConfigVariableString
 loadPrcFile("../config.prc")
 GAME = ConfigVariableString('game', 'fft').getValue()
-loadPrcFile(GAME+"/config.prc")
+loadPrcFile(f"{GAME}/config.prc")
 
 IP = ConfigVariableString('ip', '127.0.0.1').getValue()
 PORT =  int(ConfigVariableString('port', '3001').getValue())

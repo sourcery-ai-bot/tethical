@@ -9,28 +9,32 @@ class Matrix(object):
         self.mp = mp
         self.container = render.attachNewNode( "matrixContainer" )
 
-        self.tiles = [ [ [ None for z in range(self.mp['z']) ] for y in range(self.mp['y']) ] for x in range(self.mp['x']) ]
+        self.tiles = [
+            [[None for _ in range(self.mp['z'])] for _ in range(self.mp['y'])]
+            for _ in range(self.mp['x'])
+        ]
+
 
         for x,xs in enumerate(self.mp['tiles']):
             for y,ys in enumerate(xs):
                 for z,zs in enumerate(ys):
-                    if not self.mp['tiles'][x][y][z] is None:
+                    if self.mp['tiles'][x][y][z] is not None:
                         slope = self.mp['tiles'][x][y][z]['slope']
                         scale = self.mp['tiles'][x][y][z]['scale']
                         depth = self.mp['tiles'][x][y][z]['depth']
 
-                        self.tiles[x][y][z] = loader.loadModel(GAME+"/models/slopes/"+slope)
+                        self.tiles[x][y][z] = loader.loadModel(f"{GAME}/models/slopes/{slope}")
                         self.tiles[x][y][z].reparentTo( self.container )
                         self.tiles[x][y][z].setPos(self.battleGraphics.logic2terrain( (x, y, z+depth+0.05) ))
                         self.tiles[x][y][z].setScale(3.7, 3.7, 6.0/7.0*3.7*scale)
                         self.tiles[x][y][z].setTransparency(TransparencyAttrib.MAlpha)
                         self.tiles[x][y][z].setColor( 0, 0, 0, 0 )
 
-        self.wtex = loader.loadTexture(GAME+'/textures/walkable.png')
+        self.wtex = loader.loadTexture(f'{GAME}/textures/walkable.png')
         self.wtex.setMagfilter(Texture.FTNearest)
         self.wtex.setMinfilter(Texture.FTNearest)
-        
-        self.atex = loader.loadTexture(GAME+'/textures/attackable.png')
+
+        self.atex = loader.loadTexture(f'{GAME}/textures/attackable.png')
         self.atex.setMagfilter(Texture.FTNearest)
         self.atex.setMinfilter(Texture.FTNearest)
 
@@ -41,7 +45,7 @@ class Matrix(object):
         for x,xs in enumerate(self.mp['tiles']):
             for y,ys in enumerate(xs):
                 for z,zs in enumerate(ys):
-                    if not self.mp['tiles'][x][y][z] is None:
+                    if self.mp['tiles'][x][y][z] is not None:
                         slope = self.mp['tiles'][x][y][z]['slope']
                         scale = self.mp['tiles'][x][y][z]['scale']
                         depth = self.mp['tiles'][x][y][z]['depth']
@@ -49,7 +53,13 @@ class Matrix(object):
                         if self.mp['tiles'][x][y][z].has_key('char'):
                             charid = self.mp['tiles'][x][y][z]['char']
                             char = self.chars[charid]
-                            sprite = Sprite.Sprite(GAME+'/textures/sprites/'+char['sprite']+'.png', int(char['direction']))
+                            sprite = Sprite.Sprite(
+                                f'{GAME}/textures/sprites/'
+                                + char['sprite']
+                                + '.png',
+                                int(char['direction']),
+                            )
+
                             sprite.animation = 'stand'
                             sprite.node.setPos(self.battleGraphics.logic2terrain((x,y,z)))
                             sprite.node.reparentTo( render )
@@ -80,7 +90,7 @@ class Matrix(object):
         for x,xs in enumerate(self.mp['tiles']):
             for y,ys in enumerate(xs):
                 for z,zs in enumerate(ys):
-                    if not self.mp['tiles'][x][y][z] is None:
+                    if self.mp['tiles'][x][y][z] is not None:
                         self.tiles[x][y][z].setColor(0, 0, 0, 0)
                         if self.mp['tiles'][x][y][z].has_key('walkablezone'):
                             del self.mp['tiles'][x][y][z]['walkablezone']
@@ -92,7 +102,10 @@ class Matrix(object):
         for x,xs in enumerate(self.mp['tiles']):
             for y,ys in enumerate(xs):
                 for z,zs in enumerate(ys):
-                    if not self.mp['tiles'][x][y][z] is None:
-                        if self.mp['tiles'][x][y][z].has_key('char') and self.mp['tiles'][x][y][z]['char'] != 0:
-                            if charid == self.mp['tiles'][x][y][z]['char']:
-                                return (x, y, z)
+                    if (
+                        self.mp['tiles'][x][y][z] is not None
+                        and self.mp['tiles'][x][y][z].has_key('char')
+                        and self.mp['tiles'][x][y][z]['char'] != 0
+                        and charid == self.mp['tiles'][x][y][z]['char']
+                    ):
+                        return (x, y, z)

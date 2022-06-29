@@ -8,12 +8,10 @@ def execute(client, iterator):
     damages = iterator.getUint8()
     attackables = json.loads(iterator.getString())
 
-    print damages
+    charid = iterator.getString()
     target = client.party['chars'][targetid]
     target['hp'] = target['hp'] - damages
-    if target['hp'] < 0:
-        target['hp'] = 0
-
+    target['hp'] = max(target['hp'], 0)
     client.inputs.ignoreAll()
     seq = Sequence()
     seq.append( Func(client.matrix.setupAttackableZone, charid, attackables) )

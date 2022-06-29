@@ -6,23 +6,23 @@ import Sprite2d
 class Sprite:
 
     def __init__(self, sheet, realdir=1):
-    
+
         self.realdir    = realdir
         self.camdir     = 1
         self.displaydir = 1
         self.animation  = 'walk'
-    
+
         self.sprite2d = Sprite2d.Sprite2d(sheet, cols=14, rows=4, scale=SPRITE_SCALE*0.7*256.0/240.0, anchorX='Center')
 
         # the main container
         self.node = NodePath("dummy1")
-        
+
         # shadow
-        self.shadow = loader.loadModel(GAME+'/models/slopes/flat')
+        self.shadow = loader.loadModel(f'{GAME}/models/slopes/flat')
         self.shadow.setZ(0.075)
         self.shadow.setScale(3.7)
         self.shadow.setTransparency(TransparencyAttrib.MAlpha)
-        self.shadowtexture = loader.loadTexture(GAME+'/textures/shadow.png')
+        self.shadowtexture = loader.loadTexture(f'{GAME}/textures/shadow.png')
         self.shadowtexture.setMagfilter(Texture.FTNearest)
         self.shadowtexture.setMinfilter(Texture.FTNearest)
         self.shadowtexture.setWrapU(Texture.WMRepeat)
@@ -57,22 +57,22 @@ class Sprite:
         self.sprite2d.createAnim('run2', (15,16,17,18,19,18,17,16), fps=15)
         self.sprite2d.createAnim('run3', (29,30,31,32,33,32,31,30), fps=15)
         self.sprite2d.createAnim('run4', (43,44,45,46,47,46,45,44), fps=15)
-        
+
         self.sprite2d.createAnim('hit1', ( 6, 6), fps=10)
         self.sprite2d.createAnim('hit2', (20,20), fps=10)
         self.sprite2d.createAnim('hit3', (34,34), fps=10)
         self.sprite2d.createAnim('hit4', (48,48), fps=10)
-        
+
         self.sprite2d.createAnim('weak1', ( 7, 7), fps=10)
         self.sprite2d.createAnim('weak2', (21,21), fps=10)
         self.sprite2d.createAnim('weak3', (35,35), fps=10)
         self.sprite2d.createAnim('weak4', (49,49), fps=10)
-        
+
         self.sprite2d.createAnim('dead1', ( 8, 8), fps=10)
         self.sprite2d.createAnim('dead2', (22,22), fps=10)
         self.sprite2d.createAnim('dead3', (36,36), fps=10)
         self.sprite2d.createAnim('dead4', (50,50), fps=10)
-        
+
         self.sprite2d.createAnim('attack1', ( 9,10, 9,13,11,12,11,13), fps=8)
         self.sprite2d.createAnim('attack2', (23,24,23,27,25,26,25,27), fps=8)
         self.sprite2d.createAnim('attack3', (37,38,37,41,39,40,39,41), fps=8)
